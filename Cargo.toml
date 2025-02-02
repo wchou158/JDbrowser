@@ -1,0 +1,19 @@
+[package]
+name = "jdbrowser"
+version = "1.0.0"
+edition = "2021"
+authors = ["Jonathan Keyuk"]
+license = "GNU GPLv3"
+description = "A tool to browse Sqlite databases"
+readme = "readme.md"
+keywords = ["cli", "tui", "sqlite","browser"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+clap = { version = "4.5.27" , features = ["derive"]}
+color-eyre = "0.6.3"
+crossterm = "0.28.1"
+ratatui = { version = "0.29.0", features = ["serde"] }
+rusqlite = "0.33.0"
+sqlparser = "0.54.0"
+strum = "0.26.3"
