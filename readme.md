@@ -2,15 +2,15 @@
 
 Browse an Sqlite database from the terminal.
 
-Licence: GNU GPLv3
-
 # Installation
 
-No Configuration needed.
+No configuration needed.
 
 A binary can be directly built with:
 
 `cargo build --release` 
+
+The binary will be available at ***target/release/jdbrowser***
 
 # Usage
 
@@ -18,25 +18,31 @@ A binary can be directly built with:
 
 - Select your database from the initial file menu.
 
-
 - Use the keybindings to browse the tables and views of your database.
 
 ## Key Binds
 
-> [File Menu]
-> Up <k> - Down <j> - Select <Enter>
+### File Menu
 
-> [Main view left tab bar]
-> Tab left <q> - Tab right <e> 
+Up: [ **k** ] - Down: [ **j** ] - Select: [ **Enter** ]
 
-> [Main view right tab bar]
-> Tab left <h> - Tab right <l> 
+### Main view left tab bar
 
-> [Main view left side navigation]
-> Up <k> - Down <j>  
+Tab left: [ **q** ] - Tab right: [ **e** ] 
 
-> [Table View]
-> Up <shift + k> - Down <shift + j> - left <shift + h> - right <shift + l>  
+### Main view right tab bar
+
+Tab left: [ **h** ] - Tab right: [ **l** ] 
+
+### Main view left side navigation
+
+Up: [ **k** ] - Down: [ **j** ]  
+
+### Table View
+
+Up [ **shift + k** ] - Down [ **shift + j** ] - left [ **shift + h** ] - right [ **shift + l** ]  
+
+Page Down Half: [ **d** ] - Page Up Half: [ **u** ]  
 
 # Screen Shots
 
