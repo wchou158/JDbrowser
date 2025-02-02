@@ -2,15 +2,15 @@
 
 Browse an Sqlite database from the terminal.
 
-Licence: GNU GPLv3
-
 # Installation
 
-No Configuration needed.
+No configuration needed.
 
 A binary can be directly built with:
 
 `cargo build --release` 
+
+The binary will be available at ***target/release/jdbrowser***
 
 # Usage
 
