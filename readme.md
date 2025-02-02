@@ -18,31 +18,29 @@ A binary can be directly built with:
 
 - Select your database from the initial file menu.
 
-
 - Use the keybindings to browse the tables and views of your database.
 
 ## Key Binds
 
-> [File Menu]
+File Menu
 
-Up <k> - Down <j> - Select <Enter>
+> Up: [**k**] - Down: [**j**] - Select: [**Enter**]
 
-> [Main view left tab bar]
+Main view left tab bar
 
-Tab left <q> - Tab right <e> 
+> Tab left: [**q**] - Tab right: [**e**] 
 
-> [Main view right tab bar]
+Main view right tab bar
 
-Tab left <h> - Tab right <l> 
+> Tab left: [**h**] - Tab right: [**l**] 
 
-> [Main view left side navigation]
+Main view left side navigation
 
-Up <k> - Down <j>  
+> Up: [**k**] - Down: [**j**]  
 
-> [Table View]
+Table View
 
-Up <shift + k> - Down <shift + j> - left <shift + h> - right <shift + l>  
-Page Up <u> - Page Down <d>
+> Up [**shift + k**] - Down [**shift + j**] - left [**shift + h**] - right [**shift + l**]  
 
 # Screen Shots
 
