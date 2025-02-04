@@ -5,7 +5,7 @@ use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::Stylize,
     text::{Line, Span},
-    widgets::{Block, BorderType},
+    widgets::{Block, BorderType, Clear},
     Frame,
 };
 use std::io;
@@ -23,6 +23,7 @@ const APP_NAME: &str = " JDbrowser ";
 pub struct Ui {
     file_list: StringList,
     table_view: TableView,
+    show_help: bool,
 }
 
 impl Ui {
@@ -32,6 +33,7 @@ impl Ui {
         Ok(Self {
             file_list,
             table_view: TableView::default(),
+            show_help: false,
         })
     }
 
@@ -45,6 +47,10 @@ impl Ui {
         } else {
             file_menu::draw(frame, &mut self.file_list);
         }
+
+        if self.show_help {
+            draw_help_window(frame, lay[0]);
+        }
     }
 
     pub fn handle_input(
@@ -56,6 +62,9 @@ impl Ui {
             self.table_view.handle_input(key, app)?;
         } else {
             self.handle_flist_input(key, app)?;
+        }
+        if key.code == KeyCode::Char('?') {
+            self.show_help = !self.show_help;
         }
         Ok(())
     }
@@ -76,6 +85,15 @@ impl Ui {
         }
         Ok(())
     }
+}
+
+fn draw_help_window(frame: &mut Frame, lay: Rect) {
+    let background = Block::bordered()
+        .title(Line::from(" HELP ").fg(SECONDARY_COLOR).bold().centered())
+        .fg(PRIMARY_COLOR)
+        .border_type(BorderType::Rounded);
+    frame.render_widget(Clear, lay);
+    frame.render_widget(background, lay);
 }
 
 fn draw_outer_frame(frame: &mut Frame, app: &App, area: Rect) {

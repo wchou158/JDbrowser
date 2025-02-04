@@ -59,3 +59,5 @@ Page Down Half: [ **d** ] - Page Up Half: [ **u** ]
 - show preview window
 - key binding hints 
 
+- Add docs like peaclock
+- add shell script to build or install
