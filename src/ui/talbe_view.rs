@@ -20,10 +20,10 @@ use strum::{Display, EnumIter, IntoEnumIterator};
 #[derive(Clone, Copy, Default, Debug, Display, EnumIter)]
 pub enum SelectedTableTab {
     #[default]
-    #[strum(to_string = "Schema")]
-    Schema,
     #[strum(to_string = "Browse")]
     Browse,
+    #[strum(to_string = "Schema")]
+    Schema,
 }
 
 impl SelectedTableTab {
