@@ -90,12 +90,7 @@ impl Ui {
 }
 
 fn draw_outer_frame(frame: &mut Frame, app: &App, area: Rect) {
-    let mut key_binds: Vec<Span> = vec![
-        " Up ".into(),
-        "[k]".fg(HIGHLIGHTED_COLOR),
-        " Down ".into(),
-        "[j]".fg(HIGHLIGHTED_COLOR),
-    ];
+    let mut key_binds: Vec<Span> = Vec::default();
     append_keybinds(app, &mut key_binds);
     frame.render_widget(new_outer_frame(app, key_binds), area);
 }
@@ -105,7 +100,14 @@ fn append_keybinds(app: &App, key_binds: &mut Vec<Span>) {
         let mut right_left_keys: Vec<Span> = vec![" Help ".into(), "[?] ".fg(HIGHLIGHTED_COLOR)];
         key_binds.append(&mut right_left_keys);
     } else {
-        let mut enter_key: Vec<Span> = vec![" Select ".into(), "[Enter] ".fg(HIGHLIGHTED_COLOR)];
+        let mut enter_key: Vec<Span> = vec![
+            " Up ".into(),
+            "[k]".fg(HIGHLIGHTED_COLOR),
+            " Down ".into(),
+            "[j]".fg(HIGHLIGHTED_COLOR),
+            " Select ".into(),
+            "[Enter] ".fg(HIGHLIGHTED_COLOR),
+        ];
         key_binds.append(&mut enter_key);
     }
 }
