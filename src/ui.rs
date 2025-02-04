@@ -5,7 +5,7 @@ use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::Stylize,
     text::{Line, Span},
-    widgets::{Block, BorderType, Clear},
+    widgets::{Block, BorderType, Clear, Row, Table},
     Frame,
 };
 use std::io;
@@ -88,6 +88,12 @@ impl Ui {
     }
 }
 
+const FILE_MENU_KEYS: [[&str; 2]; 3] = [["Up", "k"], ["Down", "j"], ["Select", "Enter"]];
+const FILE_TITLE: &str = "File Menu Keybinds";
+
+const MAIN_VIEW_TITLE: &str = "Main View Keybinds";
+const NAV_TAB: [[&str; 2]; 1] = [["Switch Table - Views", "q - e"]];
+
 fn draw_help_window(frame: &mut Frame, lay: Rect) {
     let background = Block::bordered()
         .title(Line::from(" HELP ").fg(SECONDARY_COLOR).bold().centered())
@@ -95,6 +101,23 @@ fn draw_help_window(frame: &mut Frame, lay: Rect) {
         .border_type(BorderType::Rounded);
     frame.render_widget(Clear, lay);
     frame.render_widget(background, lay);
+
+    let l = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)])
+        .margin(2)
+        .split(lay);
+
+    let file_menu_table = Table::new(
+        FILE_MENU_KEYS.map(|x| Row::new(x)),
+        Constraint::from_mins([0, 0]),
+    )
+    .fg(TEXT_COLOR)
+    .block(Block::default().title(FILE_TITLE.underlined()));
+    frame.render_widget(file_menu_table, l[0]);
+
+    let main_view_table = Table::new(NAV_TAB.map(|x| Row::new(x)), Constraint::from_mins([0, 0]))
+        .fg(TEXT_COLOR)
+        .block(Block::default().title(MAIN_VIEW_TITLE.underlined()));
+    frame.render_widget(main_view_table, l[1]);
 }
 
 fn draw_outer_frame(frame: &mut Frame, app: &App, area: Rect) {
