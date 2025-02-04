@@ -14,17 +14,16 @@ const TITLE: &str = " HELP ";
 const FILE_TITLE: &str = " File Menu Keybinds ";
 const FILE_MENU_KEYS: [[&str; 2]; 3] = [["Up", "k"], ["Down", "j"], ["Select", "Enter"]];
 
-const MAIN_VIEW_TITLE: &str = " Main View Keybinds ";
-const TAB_BAR_KEYS: [[&str; 2]; 2] = [
+const NAV_LIST_TITLE: &str = " Navigation List Keybinds (Left side) ";
+const NAV_LIST_KEYS: [[&str; 2]; 3] = [
     ["Switch Tables - Views", "q - e"],
-    ["Switch View Schema - Browse Data", "h - l"],
+    ["Up", "k"],
+    ["Down", "j"],
 ];
 
-const NAV_LIST_TITLE: &str = " Navigation List Keybinds (Left side) ";
-const NAV_LIST_KEYS: [[&str; 2]; 2] = [["Up", "k"], ["Down", "j"]];
-
 const TABLE_VIEW_TITLE: &str = " Table View Keybinds ";
-const TABLE_KEYS: [[&str; 2]; 6] = [
+const TABLE_KEYS: [[&str; 2]; 7] = [
+    ["Switch View Schema - Browse Data", "h - l"],
     ["Page Up Half", "u"],
     ["Page Down Half", "d"],
     ["Move Cell Up", "shift + k"],
@@ -42,7 +41,7 @@ pub fn draw_help_window(frame: &mut Frame, lay: Rect) {
     frame.render_widget(background, lay);
 
     let area = center(lay, Constraint::Length(60), Constraint::Length(60));
-    let split_area = Layout::vertical(Constraint::from_lengths([5, 4, 4, 8]))
+    let split_area = Layout::vertical(Constraint::from_lengths([5, 5, 9]))
         .margin(2)
         .split(area);
     let widths = Constraint::from_lengths([40, 10]);
@@ -53,23 +52,17 @@ pub fn draw_help_window(frame: &mut Frame, lay: Rect) {
     );
     frame.render_widget(file_menu_table, split_area[0]);
 
-    let main_view_table = set_style(
-        Table::new(TAB_BAR_KEYS.map(|x| Row::new(x).fg(TEXT_COLOR)), &widths),
-        MAIN_VIEW_TITLE,
-    );
-    frame.render_widget(main_view_table, split_area[1]);
-
     let nav_list_table = set_style(
         Table::new(NAV_LIST_KEYS.map(|x| Row::new(x).fg(TEXT_COLOR)), &widths),
         NAV_LIST_TITLE,
     );
-    frame.render_widget(nav_list_table, split_area[2]);
+    frame.render_widget(nav_list_table, split_area[1]);
 
     let table_view_table = set_style(
         Table::new(TABLE_KEYS.map(|x| Row::new(x).fg(TEXT_COLOR)), &widths),
         TABLE_VIEW_TITLE,
     );
-    frame.render_widget(table_view_table, split_area[3]);
+    frame.render_widget(table_view_table, split_area[2]);
 }
 
 fn set_style<'a>(t: Table<'a>, title: &'a str) -> Table<'a> {
