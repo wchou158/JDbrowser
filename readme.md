@@ -57,7 +57,6 @@ Page Down Half: [ **d** ] - Page Up Half: [ **u** ]
 - error handling popup
 - handle blob data
 - show preview window
-- key binding hints 
 
 - Add docs like peaclock
 - add shell script to build or install

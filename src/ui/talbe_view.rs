@@ -1,6 +1,6 @@
 use super::{
     string_list::{self, StringList},
-    HIGHLIGHTED_COLOR, SECONDARY_COLOR, TEXT_COLOR,
+    SECONDARY_COLOR, TEXT_COLOR,
 };
 use crate::app::{self, App, Db};
 use crossterm::event::{KeyCode, KeyEvent};
