@@ -36,25 +36,30 @@ The binary will be available at ***target/release/jdbrowser***
 
 ### File Menu
 
-Up: [ **k** ] - Down: [ **j** ] - Select: [ **Enter** ]
-
-### Main view left tab bar
-
-Tab left: [ **q** ] - Tab right: [ **e** ] 
-
-### Main view right tab bar
-
-Tab left: [ **h** ] - Tab right: [ **l** ] 
+| Action | Keybind |
+| ------------- | -------------- |
+| Up        |  k        |
+| Down      |  j        |
+| Select    |  Enter    |
 
 ### Main view left side navigation
 
-Up: [ **k** ] - Down: [ **j** ]  
+| Action | Keybind |
+| ------------- | -------------- |
+| Tab left - right        |  q, e        |
+| Up        |  k        |
+| Down      |  j        |
 
 ### Table View
 
-Up [ **shift + k** ] - Down [ **shift + j** ] - left [ **shift + h** ] - right [ **shift + l** ]  
-
-Page Down Half: [ **d** ] - Page Up Half: [ **u** ]  
+| Action | Keybind |
+| ------------- | -------------- |
+| Tab left - right        |  h, l        |
+| Page Up / Down Half |  u, d |  
+| Up            |  shift + k  |
+| Down            |  shift + j  |
+| Left            |  shift + h  |
+| Right            |  shift + l  |
 
 # Screen Shots
 
