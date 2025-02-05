@@ -2,11 +2,23 @@
 
 Browse an Sqlite database from the terminal.
 
-# Installation
+# Installation and Building
 
 No configuration needed.
 
-A binary can be directly built with:
+### Download Binary
+
+Binaries are available for download [Here](https://github.com/Jkeyuk/JDbrowser/releases) 
+
+### Install With Rust
+
+A simple way to install the binary using Rust:
+
+`cargo install --path .`
+
+### Build with Rust
+
+A binary can also be directly built with:
 
 `cargo build --release` 
 
@@ -24,25 +36,30 @@ The binary will be available at ***target/release/jdbrowser***
 
 ### File Menu
 
-Up: [ **k** ] - Down: [ **j** ] - Select: [ **Enter** ]
-
-### Main view left tab bar
-
-Tab left: [ **q** ] - Tab right: [ **e** ] 
-
-### Main view right tab bar
-
-Tab left: [ **h** ] - Tab right: [ **l** ] 
+| Action | Keybind |
+| ------------- | -------------- |
+| Up        |  k        |
+| Down      |  j        |
+| Select    |  Enter    |
 
 ### Main view left side navigation
 
-Up: [ **k** ] - Down: [ **j** ]  
+| Action | Keybind |
+| ------------- | -------------- |
+| Tab left - right        |  q, e        |
+| Up        |  k        |
+| Down      |  j        |
 
 ### Table View
 
-Up [ **shift + k** ] - Down [ **shift + j** ] - left [ **shift + h** ] - right [ **shift + l** ]  
-
-Page Down Half: [ **d** ] - Page Up Half: [ **u** ]  
+| Action | Keybind |
+| ------------- | -------------- |
+| Tab left - right        |  h, l        |
+| Page Up / Down Half |  u, d |  
+| Up            |  shift + k  |
+| Down            |  shift + j  |
+| Left            |  shift + h  |
+| Right            |  shift + l  |
 
 # Screen Shots
 
@@ -57,5 +74,6 @@ Page Down Half: [ **d** ] - Page Up Half: [ **u** ]
 - error handling popup
 - handle blob data
 - show preview window
-- key binding hints 
 
+- Add docs like peaclock
+- add shell script to build or install

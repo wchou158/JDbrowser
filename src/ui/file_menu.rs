@@ -1,12 +1,12 @@
 use ratatui::{
-    layout::{Constraint, Flex, Layout, Rect},
+    layout::Constraint,
     style::Stylize,
     text::{Line, Text},
     widgets::{Block, BorderType, List},
     Frame,
 };
 
-use super::{string_list::StringList, HIGHLIGHT_STYLE, SECONDARY_COLOR};
+use super::{string_list::StringList, utils::center, HIGHLIGHT_STYLE, SECONDARY_COLOR};
 
 pub fn draw(frame: &mut Frame, list: &mut StringList) {
     let title = Line::from(" Select Database ")
@@ -45,25 +45,4 @@ fn map_to_text(list: &[String]) -> Vec<Text> {
         })
         .collect::<Vec<Text>>();
     text_items
-}
-
-/// Centers a [`Rect`] within another [`Rect`] using the provided [`Constraint`]s.
-///
-/// # Examples
-///
-/// ```rust
-/// use ratatui::layout::{Constraint, Rect};
-///
-/// let area = Rect::new(0, 0, 100, 100);
-/// let horizontal = Constraint::Percentage(20);
-/// let vertical = Constraint::Percentage(30);
-///
-/// let centered = center(area, horizontal, vertical);
-/// ```
-pub fn center(area: Rect, horizontal: Constraint, vertical: Constraint) -> Rect {
-    let [area] = Layout::horizontal([horizontal])
-        .flex(Flex::Center)
-        .areas(area);
-    let [area] = Layout::vertical([vertical]).flex(Flex::Center).areas(area);
-    area
 }

@@ -1,6 +1,6 @@
 use super::{
     string_list::{self, StringList},
-    HIGHLIGHTED_COLOR, SECONDARY_COLOR, TEXT_COLOR,
+    SECONDARY_COLOR, TEXT_COLOR,
 };
 use crate::app::{self, App, Db};
 use crossterm::event::{KeyCode, KeyEvent};
@@ -20,10 +20,10 @@ use strum::{Display, EnumIter, IntoEnumIterator};
 #[derive(Clone, Copy, Default, Debug, Display, EnumIter)]
 pub enum SelectedTableTab {
     #[default]
-    #[strum(to_string = "Schema")]
-    Schema,
     #[strum(to_string = "Browse")]
     Browse,
+    #[strum(to_string = "Schema")]
+    Schema,
 }
 
 impl SelectedTableTab {
@@ -100,12 +100,7 @@ impl Widget for NavigationTab {
         .divider(symbols::DOT)
         .padding(" ", " ")
         .select(self as usize)
-        .block(Block::default().title_bottom(Line::from(vec![
-            "Tab Left ".fg(SECONDARY_COLOR).bold(),
-            "<q> ".fg(HIGHLIGHTED_COLOR).bold(),
-            "Tab Right".fg(SECONDARY_COLOR).bold(),
-            " <e>".fg(HIGHLIGHTED_COLOR).bold(),
-        ])))
+        .block(Block::default())
         .render(area, buf);
     }
 }
