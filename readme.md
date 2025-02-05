@@ -2,11 +2,23 @@
 
 Browse an Sqlite database from the terminal.
 
-# Installation
+# Installation and Building
 
 No configuration needed.
 
-A binary can be directly built with:
+### Download Binary
+
+Binaries are available for download [Here](https://github.com/Jkeyuk/JDbrowser/releases) 
+
+### Install With Rust
+
+A simple way to install the binary using Rust:
+
+`cargo install --path .`
+
+### Build with Rust
+
+A binary can also be directly built with:
 
 `cargo build --release` 
 
