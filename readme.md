@@ -53,6 +53,14 @@ Browse an Sqlite database from the terminal with a text user interface.
 
 No configuration needed.
 
+### Arch Linux
+
+You can install Jvol from the AUR. Example using yay.
+
+```bash
+yay -S jdbrowser-git
+```
+
 ### Download Binary
 
 Binaries are available for download [Here](https://github.com/Jkeyuk/JDbrowser/releases) 
