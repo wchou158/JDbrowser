@@ -1,4 +1,5 @@
 use super::{
+    colors::HIGHLIGHTED_COLOR,
     string_list::{self, StringList},
     SECONDARY_COLOR, TEXT_COLOR,
 };
@@ -54,6 +55,11 @@ impl Widget for SelectedTableTab {
             SelectedTableTab::iter().map(|x| Line::from(x.to_string()).fg(SECONDARY_COLOR).bold()),
         )
         .divider(symbols::DOT)
+        .highlight_style(
+            Style::default()
+                .underlined()
+                .underline_color(HIGHLIGHTED_COLOR),
+        )
         .padding(" ", " ")
         .select(self as usize)
         .block(Block::default().borders(Borders::LEFT))
@@ -98,6 +104,11 @@ impl Widget for NavigationTab {
             NavigationTab::iter().map(|x| Line::from(x.to_string()).fg(SECONDARY_COLOR).bold()),
         )
         .divider(symbols::DOT)
+        .highlight_style(
+            Style::default()
+                .underlined()
+                .underline_color(HIGHLIGHTED_COLOR),
+        )
         .padding(" ", " ")
         .select(self as usize)
         .block(Block::default())
@@ -197,18 +208,39 @@ impl TableView {
 
     fn draw_body(&mut self, frame: &mut Frame, table: &app::Table, r: Rect) {
         let margin = 2;
-        let table_inner = Layout::vertical([Constraint::Fill(1)])
-            .margin(margin)
-            .split(r);
         match self.selected_table_tab {
             SelectedTableTab::Schema => {
+                let lay = Layout::vertical([Constraint::Fill(1)])
+                    .margin(margin)
+                    .split(r);
                 let p = Paragraph::new(table.sql.trim())
                     .wrap(Wrap { trim: true })
                     .fg(TEXT_COLOR);
-                frame.render_widget(p, table_inner[0]);
+                frame.render_widget(p, lay[0]);
             }
             SelectedTableTab::Browse => {
-                self.draw_table(frame, table_inner[0], table.name.as_str());
+                let lay = Layout::vertical([Constraint::Fill(1), Constraint::Length(3)])
+                    .margin(margin)
+                    .split(r);
+                self.draw_table(frame, lay[0], table.name.as_str());
+                self.draw_preview(frame, lay[1]);
+            }
+        }
+    }
+
+    fn draw_preview(&mut self, frame: &mut Frame, table_inner: Rect) {
+        if let Some((x, y)) = self.table_state.selected_cell() {
+            if let Some(row) = self.data.1.get(x) {
+                if let Some(val) = row.get(y) {
+                    let p =
+                        Paragraph::new(val.as_str())
+                            .wrap(Wrap { trim: true })
+                            .fg(TEXT_COLOR)
+                            .block(Block::bordered().border_type(BorderType::Rounded).title(
+                                " Preview ".fg(SECONDARY_COLOR).bold().into_centered_line(),
+                            ));
+                    frame.render_widget(p, table_inner);
+                }
             }
         }
     }
@@ -251,7 +283,7 @@ impl TableView {
         app: &mut App,
     ) -> Result<(), Box<dyn std::error::Error>> {
         if let Some(db) = &app.current_db {
-            if key.code == KeyCode::Char('H') {
+            if key.code == KeyCode::Char('h') {
                 self.table_state.scroll_left_by(1);
                 return Ok(());
             } else if key.code == KeyCode::Char('u') {
@@ -260,25 +292,28 @@ impl TableView {
             } else if key.code == KeyCode::Char('d') {
                 self.table_state.scroll_down_by(self.table_scroll_height);
                 return Ok(());
-            } else if key.code == KeyCode::Char('L') {
+            } else if key.code == KeyCode::Char('l') {
                 self.table_state.scroll_right_by(1);
                 return Ok(());
-            } else if key.code == KeyCode::Char('K') {
+            } else if key.code == KeyCode::Char('k') {
                 self.table_state.scroll_up_by(1);
                 return Ok(());
-            } else if key.code == KeyCode::Char('J') {
+            } else if key.code == KeyCode::Char('j') {
                 self.table_state.scroll_down_by(1);
                 return Ok(());
             } else if key.code == KeyCode::Char('e') {
                 self.table_nav_tab = self.table_nav_tab.next();
             } else if key.code == KeyCode::Char('q') {
                 self.table_nav_tab = self.table_nav_tab.previous();
-            } else if key.code == KeyCode::Char('l') {
+            } else if key.code == KeyCode::Char('L') {
                 self.selected_table_tab = self.selected_table_tab.next();
-            } else if key.code == KeyCode::Char('h') {
+            } else if key.code == KeyCode::Char('H') {
                 self.selected_table_tab = self.selected_table_tab.previous();
+            } else if key.code == KeyCode::Char('K') {
+                self.tables_list.list_state.select_previous();
+            } else if key.code == KeyCode::Char('J') {
+                self.tables_list.list_state.select_next();
             }
-            self.tables_list.handle_input(key);
             self.load_table_data(app, db)?;
         }
         Ok(())
