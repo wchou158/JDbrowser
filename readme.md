@@ -55,7 +55,7 @@ No configuration needed.
 
 ### Arch Linux
 
-You can install Jvol from the AUR. Example using yay.
+You can install JDbrowser from the AUR. Example using yay.
 
 ```bash
 yay -S jdbrowser-git
