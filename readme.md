@@ -1,4 +1,4 @@
-# JDbrowser - Terminal TUI Sqlite Browser
+# JDbrowser - Terminal TUI Sqlite Browser V1.3
 
 Browse an Sqlite database from the terminal with a text user interface.
 
@@ -11,6 +11,9 @@ Browse an Sqlite database from the terminal with a text user interface.
 - Select your database from the initial file menu.
 
 - Use the keybindings to browse the tables and views of your database.
+
+- Copy data to clipboard with `y` key. ( On wayland clipboard text is cleared after exiting JDbrowser )
+
 
 ## Key Binds
 
@@ -47,6 +50,7 @@ Browse an Sqlite database from the terminal with a text user interface.
 |    Move Cell Down | j |
 | Move Cell Left| h |
 | Move Cell Right | l |
+| Yank Cell to Clipboard | y |
 
 
 # Installation and Building
@@ -85,8 +89,10 @@ cargo build --release
 
 or:
 
+64-bit Linux (kernel 3.2+, glibc 2.17+)
+
 ```bash
-cargo build --release --target x86_64-unknown-linux-musl 
+cargo build --release --target x86_64-unknown-linux-gnu 
 ```
 
 
