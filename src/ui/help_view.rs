@@ -22,7 +22,7 @@ const NAV_LIST_KEYS: [[&str; 2]; 3] = [
 ];
 
 const TABLE_VIEW_TITLE: &str = " Table View ";
-const TABLE_KEYS: [[&str; 2]; 8] = [
+const TABLE_KEYS: [[&str; 2]; 10] = [
     ["View Schema - Browse Data", "SHIFT + h - l"],
     ["Page Up Half", "u"],
     ["Page Down Half", "d"],
@@ -31,6 +31,8 @@ const TABLE_KEYS: [[&str; 2]; 8] = [
     ["Move Cell Left", "h"],
     ["Move Cell Right", "l"],
     ["Yank Cell to Clipboard", "y"],
+    ["Prev Page", "p"],
+    ["Next Page", "n"],
 ];
 
 const GENERAL_TITLE: &str = " General ";
@@ -48,7 +50,7 @@ pub fn draw_help_window(frame: &mut Frame, lay: Rect) {
     frame.render_widget(background, lay);
 
     let area = center(lay, Constraint::Length(60), Constraint::Length(60));
-    let split_area = Layout::vertical(Constraint::from_lengths([5, 5, 10, 4]))
+    let split_area = Layout::vertical(Constraint::from_lengths([5, 5, 12, 4]))
         .margin(2)
         .split(area);
     let widths = Constraint::from_lengths([40, 14]);

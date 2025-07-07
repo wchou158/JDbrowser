@@ -39,27 +39,39 @@ impl App {
         Ok(())
     }
 
-    /// Select * from a given Table, Returns (Vec Column Names, Vec Row Data)
+    /// Select a page of rows from a given Table.
     pub fn select(
         &self,
         table: &Table,
+        limit: usize,
+        offset: usize,
     ) -> Result<(Vec<String>, Vec<Vec<String>>), rusqlite::Error> {
-        let sql = format!("SELECT * FROM {};", table.name);
+        let sql = format!(
+            "SELECT * FROM {} LIMIT {} OFFSET {};",
+            table.name, limit, offset
+        );
         if let Some(db) = &self.current_db {
             let con = Connection::open(&db.path)?;
             let mut stmt = con.prepare(&sql)?;
-
-            let num_of_columns = stmt.column_names().len();
-            let data: Vec<Vec<String>> = stmt
-                .query_map([], |row| map_row(num_of_columns, row))?
-                .map(|x| (x.unwrap_or_default()))
-                .collect();
-            return Ok((
-                stmt.column_names().iter().map(|x| x.to_string()).collect(),
-                data,
-            ));
+            let num_cols = stmt.column_names().len();
+            let rows: Vec<_> = stmt
+                .query_map([], |row| map_row(num_cols, row))?
+                .collect::<Result<_, _>>()?;
+            let cols = stmt.column_names().iter().map(|s| s.to_string()).collect();
+            return Ok((cols, rows));
         }
-        Ok((Vec::default(), Vec::default()))
+        Ok((Vec::new(), Vec::new()))
+    }
+
+    pub fn prepare_total_rows(&self, table: &Table) -> Result<usize, rusqlite::Error> {
+        let count_sql = format!("SELECT COUNT(*) FROM {};", table.name);
+
+        if let Some(db) = &self.current_db {
+            let total = Connection::open(&db.path)?.query_row(&count_sql, [], |r| r.get(0))?;
+            Ok(total)
+        } else {
+            Ok(0)
+        }
     }
 }
 

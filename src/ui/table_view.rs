@@ -17,6 +17,7 @@ use ratatui::{
     },
     Frame,
 };
+use sqlformat::{format, FormatOptions, Indent, QueryParams};
 use strum::{Display, EnumIter, IntoEnumIterator};
 
 #[derive(Clone, Copy, Default, Debug, Display, EnumIter)]
@@ -125,7 +126,10 @@ pub struct TableView {
     pub data: (Vec<String>, Vec<Vec<String>>),
     pub table_state: TableState,
     table_scroll_height: u16,
-    clipboard: Clipboard,
+    clipboard: Option<Clipboard>,
+    page_size: usize,
+    offset: usize,
+    pub total_rows: Option<usize>,
 }
 
 impl Default for TableView {
@@ -138,7 +142,10 @@ impl Default for TableView {
             data: (Vec::default(), Vec::default()),
             table_state: TableState::default(),
             table_scroll_height: 0,
-            clipboard: Clipboard::new().unwrap(),
+            clipboard: Clipboard::new().ok(),
+            page_size: 50,
+            offset: 0,
+            total_rows: None,
         }
     }
 }
@@ -229,17 +236,68 @@ impl TableView {
                 let lay = Layout::vertical([Constraint::Fill(1)])
                     .margin(margin)
                     .split(r);
+                /*
                 let p = Paragraph::new(table.sql.trim())
                     .wrap(Wrap { trim: true })
                     .fg(TEXT_COLOR);
                 frame.render_widget(p, lay[0]);
+                */
+
+                let raw_sql = table.sql.trim();
+
+                // build your options
+                let opts = FormatOptions {
+                    indent: Indent::Spaces(4), // 4‑space indent
+                    uppercase: false,          // keep keywords lower‑case
+                    lines_between_queries: 1,  // default
+                };
+
+                // call the formatter (no Dialect parameter)
+                let formatted = format(raw_sql, &QueryParams::None, opts);
+
+                // then render `formatted` instead of `raw`
+                let p = Paragraph::new(formatted)
+                    .wrap(Wrap { trim: false })
+                    .fg(TEXT_COLOR);
+                frame.render_widget(p, lay[0]);
             }
             SelectedTableTab::Browse => {
-                let lay = Layout::vertical([Constraint::Fill(1), Constraint::Length(3)])
-                    .margin(margin)
-                    .split(r);
+                // new: table, then preview, then footer for page‑info
+                let lay = Layout::vertical([
+                    Constraint::Fill(1),   // table takes all leftover space
+                    Constraint::Length(3), // preview box height
+                    Constraint::Length(1), // exactly one row for page info
+                ])
+                .margin(margin)
+                .split(r);
+
+                // draw the data table
                 self.draw_table(frame, lay[0], table.name.as_str());
+
+                // draw the preview inside a bordered box
                 self.draw_preview(frame, lay[1]);
+
+                // draw the page‑info *below* the preview
+                if let Some(total) = self.total_rows {
+                    let page = (self.offset / self.page_size) + 1;
+                    let last_page = ((total + self.page_size - 1) / self.page_size).max(1);
+                    let start = self.offset + 1;
+                    let end = (self.offset + self.page_size).min(total);
+                    let info = format!(
+                        "displaying records {start}-{end} of {total}  (page {page}/{last_page})"
+                    );
+
+                    use ratatui::layout::Alignment;
+                    use ratatui::widgets::Paragraph;
+
+                    // render it centered/right‑aligned in that one‑row footer
+                    frame.render_widget(
+                        Paragraph::new(info)
+                            .alignment(Alignment::Right)
+                            .wrap(ratatui::widgets::Wrap { trim: true }),
+                        lay[2],
+                    );
+                }
             }
         }
     }
@@ -332,6 +390,21 @@ impl TableView {
             } else if key.code == KeyCode::Char('y') {
                 self.yank_cell()?;
                 return Ok(());
+            } else if key.code == KeyCode::Char('n') {
+                // next page: only if there’s more data
+                if let Some(total) = self.total_rows {
+                    let next_off = self.offset + self.page_size;
+                    if next_off < total {
+                        self.offset = next_off;
+                    }
+                }
+            } else if key.code == KeyCode::Char('p') {
+                // prev page: never go below zero
+                if self.offset >= self.page_size {
+                    self.offset -= self.page_size;
+                } else {
+                    self.offset = 0;
+                }
             }
             self.load_table_data(app, db)?;
         }
@@ -342,7 +415,11 @@ impl TableView {
         Ok(if let Some((x, y)) = self.table_state.selected_cell() {
             if let Some(row) = self.data.1.get(x) {
                 if let Some(val) = row.get(y) {
-                    self.clipboard.set_text(val)?;
+                    if let Some(cb) = &mut self.clipboard {
+                        if let Err(e) = cb.set_text(val) {
+                            eprintln!("Clipboard warning: {}", e);
+                        }
+                    }
                     return Ok(());
                 }
             }
@@ -350,28 +427,30 @@ impl TableView {
     }
 
     fn load_table_data(&mut self, app: &App, db: &Db) -> Result<(), Box<dyn std::error::Error>> {
+        // always reset the cursor to top-left of the page
         self.table_state.select_cell(Some((0, 0)));
+
         if self.selected_table_tab as usize == SelectedTableTab::Browse as usize {
-            match self.table_nav_tab {
-                NavigationTab::Tables => {
-                    if let Some(table) = db
-                        .tables
-                        .iter()
-                        .find(|x| x.name == self.tables_list.get_selected().unwrap_or(""))
-                    {
-                        self.data = app.select(table)?;
-                    }
-                }
-                NavigationTab::Views => {
-                    if let Some(table) = db
-                        .views
-                        .iter()
-                        .find(|x| x.name == self.view_list.get_selected().unwrap_or(""))
-                    {
-                        self.data = app.select(table)?;
-                    }
-                }
+            // pick the currently selected Table or View
+            let maybe_table = match self.table_nav_tab {
+                NavigationTab::Tables => db
+                    .tables
+                    .iter()
+                    .find(|t| t.name == self.tables_list.get_selected().unwrap_or("")),
+                NavigationTab::Views => db
+                    .views
+                    .iter()
+                    .find(|v| v.name == self.view_list.get_selected().unwrap_or("")),
             };
+
+            if let Some(table) = maybe_table {
+                // load just one page of data
+                let (cols, rows) = app.select(table, self.page_size, self.offset)?;
+                self.data = (cols, rows);
+
+                // now fetch and remember the grand total
+                self.total_rows = Some(app.prepare_total_rows(table)?);
+            }
         }
         Ok(())
     }

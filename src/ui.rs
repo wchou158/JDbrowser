@@ -10,13 +10,13 @@ use ratatui::{
 };
 use std::io;
 use string_list::StringList;
-use talbe_view::TableView;
+use table_view::TableView;
 
 pub mod colors;
 pub mod file_menu;
 pub mod help_view;
 pub mod string_list;
-pub mod talbe_view;
+pub mod table_view;
 pub mod utils;
 
 const APP_NAME: &str = " JDbrowser ";
